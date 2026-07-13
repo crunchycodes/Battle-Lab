@@ -13,13 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght=0,300;0,400;0,600;0,700;0,800;1,600&family=Cinzel:wght=600;800&display=swap" rel="stylesheet">
   
-  <!-- FontAwesome Icons for premium aesthetics -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Firebase Compat SDK CDNs (Classic integration to prevent Unexpected Reserved Word crashes) -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
   <style>
     body {
@@ -1487,7 +1481,7 @@
   </footer>
 
   <!-- CONSOLIDATED RUNTIME LOGIC MODULE -->
-  <script src="roster.js"></script>
+  
   <script src="database.js"></script>
   <script>
     // State variables for paginating explorer modules
@@ -1816,154 +1810,8 @@
       }
     };
 
-    const appId = typeof __app_id !== 'undefined' ? __app_id : (window.__app_id || 'multiverse-battle-laboratory');
-    let firebaseConfig = null;
-    let auth = null;
-    let db = null;
-    let currentUser = null;
-    let charactersGlobal = [];
-    let battlesGlobal = [];
-
-    // Safely parse the injected environment configuration variables
-    const apiKey = typeof __api_key !== 'undefined' ? __api_key : (window.__api_key || ''); // Re-added apiKey definition
-    try {
-      const rawConfig = typeof __firebase_config !== 'undefined' ? __firebase_config : (window.__firebase_config || null);
-      if (rawConfig) {
-        firebaseConfig = typeof rawConfig === 'string' ? JSON.parse(rawConfig) : rawConfig;
-      }
-    } catch (e) {
-      console.error("Error parsing injected __firebase_config:", e);
-    }
-
-    // Prepopulate cloud database if it starts completely empty (RULE 3 guard)
-    async function checkAndPreloadCloudRoster() {
-      if (!db || !currentUser) return;
-      try {
-        const charsRef = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('characters');
-        const snapshot = await charsRef.get();
-        if (snapshot.empty) {
-          const defaultFighters = [
-            {
-              name: "Sonic",
-              baseName: "Sonic",
-              variant: "Default",
-              realName: "Sonic the Hedgehog",
-              publisher: "Sega",
-              powers: ["Super Speed", "Spin Dash", "Chaos Control"],
-              alignment: "Good",
-              height: "3'3\"",
-              weight: "77 lbs",
-              personality: "Impatient, adventurous, kind-hearted, loves freedom.",
-              bio: "The world's fastest hedgehog, who can run at supersonic speeds and loves adventure.",
-              mediaSource: "Sonic the Hedgehog",
-              franchise: "Sonic the Hedgehog",
-              imageUrl: "https://placehold.co/400x300/1e293b/94a3b8?text=Sonic",
-              wikiLink: "https://sonic.fandom.com/wiki/Sonic_the_Hedgehog",
-              createdTimestamp: Date.now()
-            },
-            {
-              name: "Kirby",
-              baseName: "Kirby",
-              variant: "Default",
-              realName: "Kirby of the Stars",
-              publisher: "Nintendo",
-              powers: ["Inhale Copy Ability", "Float", "Star Spit"],
-              alignment: "Good",
-              height: "0'8\"",
-              weight: "0.1 lbs",
-              personality: "Cheerful, innocent, loves eating and sleeping.",
-              bio: "A round, pink hero from Planet Popstar who can copy abilities by swallowing foes.",
-              mediaSource: "Kirby",
-              franchise: "Kirby",
-              imageUrl: "https://placehold.co/400x300/1e293b/94a3b8?text=Kirby",
-              wikiLink: "https://kirby.fandom.com/wiki/Kirby",
-              createdTimestamp: Date.now()
-            },
-            {
-              name: "Shadow",
-              baseName: "Shadow",
-              variant: "Default",
-              realName: "Shadow the Hedgehog",
-              publisher: "Sega",
-              powers: ["Chaos Spear", "Chaos Blast", "Teleportation"],
-              alignment: "Neutral",
-              height: "3'3\"",
-              weight: "77 lbs",
-              personality: "Brooding, intense, fiercely determined, independent.",
-              bio: "The Ultimate Life Form, a black hedgehog created by Gerald Robotnik to cure illness.",
-              mediaSource: "Sonic the Hedgehog",
-              franchise: "Sonic the Hedgehog",
-              imageUrl: "https://placehold.co/400x300/1e293b/94a3b8?text=Shadow",
-              wikiLink: "https://sonic.fandom.com/wiki/Shadow_the_Hedgehog",
-              createdTimestamp: Date.now()
-            },
-            {
-              name: "Mega Man",
-              baseName: "Mega Man",
-              variant: "Default",
-              realName: "Rock",
-              publisher: "Capcom",
-              powers: ["Mega Buster", "Weapon Copy System", "Slide"],
-              alignment: "Good",
-              height: "4'4\"",
-              weight: "230 lbs",
-              personality: "Just, peaceful, brave, values robot and human harmony.",
-              bio: "A highly advanced helper robot modified for combat by Dr. Light to defeat Dr. Wily.",
-              mediaSource: "Mega Man",
-              franchise: "Mega Man",
-              imageUrl: "https://placehold.co/400x300/1e293b/94a3b8?text=Mega+Man",
-              wikiLink: "https://megaman.fandom.com/wiki/Mega_Man",
-              createdTimestamp: Date.now()
-            }
-          ];
-          for (const f of defaultFighters) {
-            const docId = generateCharacterId(f.baseName, f.variant, f.franchise);
-            await charsRef.doc(docId).set(f);
-          }
-        }
-      } catch (err) {
-        console.warn("Failed to check and preload cloud roster:", err);
-      }
-    }
-
     function startApp() {
-      // Try to initialize Firebase securely if credentials are set
-      try {
-        if (typeof firebase !== 'undefined' && firebaseConfig && firebaseConfig.apiKey) {
-          firebase.initializeApp(firebaseConfig);
-          db = firebase.firestore();
-          auth = firebase.auth();
-          
-          // RULE 3: Custom token priority, fallback to anonymous
-          const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : (window.__initial_auth_token || null);
-          let signInPromise;
-          if (token) {
-            signInPromise = auth.signInWithCustomToken(token);
-          } else {
-            signInPromise = auth.signInAnonymously();
-          }
-
-          signInPromise.then(userCredential => {
-            currentUser = auth.currentUser || userCredential.user || userCredential;
-            document.getElementById('db-status').className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
-            document.getElementById('db-status').innerHTML = '<span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-400 animate-pulse"></span>Cloud Storage Active';
-            
-            // Wait for preloading cloud data to complete before starting snapshot listeners
-            checkAndPreloadCloudRoster().then(() => {
-              setupDatabaseListeners();
-            });
-          }).catch(err => {
-            console.warn("Auth failed, falling back to local storage sandbox:", err);
-            fallbackToLocalMode();
-          });
-        } else {
-          console.warn("No firebaseConfig or firebase SDK detected. Reverting to sandbox fallback.");
-          fallbackToLocalMode();
-        }
-      } catch (e) {
-        console.warn("Firebase initialization failed, falling back to local storage sandbox:", e);
-        fallbackToLocalMode();
-      }
+      fallbackToLocalMode();
       loadOptionsState();
     }
 
@@ -1971,7 +1819,7 @@
       db = null;
       currentUser = null;
       document.getElementById('db-status').className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20";
-      document.getElementById('db-status').innerHTML = '<span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-blue-400"></span>Local Sandbox Mode';
+      document.getElementById('db-status').innerHTML = '<span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-blue-400"></span>Local File Mode';
       checkAndPreloadRoster();
       loadLocalData();
     }
@@ -1979,82 +1827,13 @@
     function checkAndPreloadRoster() {
       const currentChars = localDbEngine.getCharacters();
       if (currentChars.length === 0) {
-        // Preload standard classic fighters to make sure the app works on very first opening
-        const defaultFighters = [
-          {
-            name: "Sonic",
-            baseName: "Sonic",
-            variant: "Default",
-            realName: "Sonic the Hedgehog",
-            publisher: "Sega",
-            powers: ["Super Speed", "Spin Dash", "Chaos Control"],
-            alignment: "Good",
-            height: "3'3\"",
-            weight: "77 lbs",
-            personality: "Impatient, adventurous, kind-hearted, loves freedom.",
-            bio: "The world's fastest hedgehog, who can run at supersonic speeds and loves adventure.",
-            mediaSource: "Sonic the Hedgehog",
-            franchise: "Sonic the Hedgehog",
-            imageUrl: "https://placehold.co/400x300/1e293b/94a3b8?text=Sonic",
-            wikiLink: "https://sonic.fandom.com/wiki/Sonic_the_Hedgehog",
-            createdTimestamp: Date.now()
-          },
-          {
-            name: "Kirby",
-            baseName: "Kirby",
-            variant: "Default",
-            realName: "Kirby of the Stars",
-            publisher: "Nintendo",
-            powers: ["Inhale Copy Ability", "Float", "Star Spit"],
-            alignment: "Good",
-            height: "0'8\"",
-            weight: "0.1 lbs",
-            personality: "Cheerful, innocent, loves eating and sleeping.",
-            bio: "A round, pink hero from Planet Popstar who can copy abilities by swallowing foes.",
-            mediaSource: "Kirby",
-            franchise: "Kirby",
-            imageUrl: "https://placehold.co/400x300/1e293b/94a3b8?text=Kirby",
-            wikiLink: "https://kirby.fandom.com/wiki/Kirby",
-            createdTimestamp: Date.now()
-          },
-          {
-            name: "Shadow",
-            baseName: "Shadow",
-            variant: "Default",
-            realName: "Shadow the Hedgehog",
-            publisher: "Sega",
-            powers: ["Chaos Spear", "Chaos Blast", "Teleportation"],
-            alignment: "Neutral",
-            height: "3'3\"",
-            weight: "77 lbs",
-            personality: "Brooding, intense, fiercely determined, independent.",
-            bio: "The Ultimate Life Form, a black hedgehog created by Gerald Robotnik to cure illness.",
-            mediaSource: "Sonic the Hedgehog",
-            franchise: "Sonic the Hedgehog",
-            imageUrl: "https://placehold.co/400x300/1e293b/94a3b8?text=Shadow",
-            wikiLink: "https://sonic.fandom.com/wiki/Shadow_the_Hedgehog",
-            createdTimestamp: Date.now()
-          },
-          {
-            name: "Mega Man",
-            baseName: "Mega Man",
-            variant: "Default",
-            realName: "Rock",
-            publisher: "Capcom",
-            powers: ["Mega Buster", "Weapon Copy System", "Slide"],
-            alignment: "Good",
-            height: "4'4\"",
-            weight: "230 lbs",
-            personality: "Just, peaceful, brave, values robot and human harmony.",
-            bio: "A highly advanced helper robot modified for combat by Dr. Light to defeat Dr. Wily.",
-            mediaSource: "Mega Man",
-            franchise: "Mega Man",
-            imageUrl: "https://placehold.co/400x300/1e293b/94a3b8?text=Mega+Man",
-            wikiLink: "https://megaman.fandom.com/wiki/Mega_Man",
-            createdTimestamp: Date.now()
-          }
-        ];
-        defaultFighters.forEach(f => localDbEngine.saveCharacter(f));
+        // Load from database.js if localStorage is empty
+        if (window.database && window.database.characters) {
+          localStorage.setItem('battle_lab_characters', JSON.stringify(window.database.characters));
+        }
+        if (window.database && window.database.battles) {
+          localStorage.setItem('battle_lab_battles', JSON.stringify(window.database.battles));
+        }
       }
     }
 
@@ -3212,6 +2991,11 @@ Output valid JSON matching this schema:
       }
     }
 
+    // Global variables
+    let charactersGlobal = [];
+    let battlesGlobal = [];
+    const apiKey = "YOUR_API_KEY"; // This will be needed if you want to use AI features like image generation.
+
     function exportData() {
       if (charactersGlobal.length === 0 && battlesGlobal.length === 0 && tournamentsGlobal.length === 0) {
         openModal("No Data Found", "There is no character, battle, or tournament bracket data currently loaded to export.", "fa-solid fa-circle-exclamation");
@@ -3219,7 +3003,7 @@ Output valid JSON matching this schema:
       }
       
       const backup = {
-        appId: appId,
+        appId: "battle-lab-local",
         timestamp: Date.now(),
         characters: charactersGlobal,
         battles: battlesGlobal,
@@ -3289,12 +3073,8 @@ Output valid JSON matching this schema:
               createdTimestamp: char.createdTimestamp || Date.now()
             };
 
-            if (db && currentUser) {
-              const docRef = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('characters').doc(id);
-              await docRef.set(payload);
-            } else {
+
               localDbEngine.saveCharacter(payload);
-            }
             importedChars++;
           }
 
@@ -3330,12 +3110,7 @@ Output valid JSON matching this schema:
                 customHandicaps: battle.customHandicaps || ''
               };
 
-              if (db && currentUser) {
-                const battlesRef = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('battles');
-                await battlesRef.add(payload);
-              } else {
-                localDbEngine.saveBattle(payload);
-              }
+              localDbEngine.saveBattle(payload);
               importedBattles++;
             }
           }
@@ -3343,17 +3118,12 @@ Output valid JSON matching this schema:
           for (const t of tournamentsToImport) {
             const alreadyExists = tournamentsGlobal.some(item => item.id === t.id);
             if (!alreadyExists) {
-              if (db && currentUser) {
-                const docRef = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('tournaments').doc(t.id);
-                await docRef.set(t);
-              } else {
-                localDbEngine.saveTournament(t);
-              }
+              localDbEngine.saveTournament(t);
               importedTours++;
             }
           }
 
-          if (!db) loadLocalData();
+          loadLocalData();
 
           openModal("Sync Succeeded", `Successfully imported ${importedChars} character profiles, ${importedBattles} battles, and ${importedTours} bracket tournaments.`, "fa-solid fa-circle-check");
         } catch (err) {
@@ -3367,61 +3137,6 @@ Output valid JSON matching this schema:
 
     async function executeDatabasePurge() {
       try {
-        if (db && currentUser) {
-          const batchLimit = 500;
-          
-          // Clear Cloud Characters
-          const charsSnap = await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('characters').get();
-          let charBatch = db.batch();
-          let count = 0;
-          for (const doc of charsSnap.docs) {
-            charBatch.delete(doc.ref);
-            count++;
-            if (count >= batchLimit) {
-              await charBatch.commit();
-              charBatch = db.batch();
-              count = 0;
-            }
-          }
-          if (count > 0) {
-            await charBatch.commit();
-          }
-
-          // Clear Cloud Battles
-          const battlesSnap = await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('battles').get();
-          let battleBatch = db.batch();
-          count = 0;
-          for (const doc of battlesSnap.docs) {
-            battleBatch.delete(doc.ref);
-            count++;
-            if (count >= batchLimit) {
-              await battleBatch.commit();
-              battleBatch = db.batch();
-              count = 0;
-            }
-          }
-          if (count > 0) {
-            await battleBatch.commit();
-          }
-
-          // Clear Cloud Tournaments
-          const toursSnap = await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('tournaments').get();
-          let tourBatch = db.batch();
-          count = 0;
-          for (const doc of toursSnap.docs) {
-            tourBatch.delete(doc.ref);
-            count++;
-            if (count >= batchLimit) {
-              await tourBatch.commit();
-              tourBatch = db.batch();
-              count = 0;
-            }
-          }
-          if (count > 0) {
-            await tourBatch.commit();
-          }
-        }
-
         // Wipe Local Sandbox Engine Data
         localStorage.removeItem('battle_lab_characters');
         localStorage.removeItem('battle_lab_battles');
@@ -4272,13 +3987,7 @@ You must return a valid JSON object matching this structure:
           createdTimestamp: Date.now()
         };
 
-        if (db && currentUser) {
-          const docRefA = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('characters').doc(idA);
-          const docSnapA = await docRefA.get();
-          if (!docSnapA.exists) await docRefA.set(JSON.parse(JSON.stringify(payloadA)));
-        } else {
-          localDbEngine.saveCharacter(payloadA);
-        }
+        localDbEngine.saveCharacter(payloadA);
 
         let imageB = (activeProfileB && activeProfileB.imageUrl) ? activeProfileB.imageUrl : (fB.imageUrl || "");
         const compressedImageB = await compressBase64Image(imageB, 300, 300, 0.8);
@@ -4302,13 +4011,7 @@ You must return a valid JSON object matching this structure:
           createdTimestamp: Date.now()
         };
 
-        if (db && currentUser) {
-          const docRefB = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('characters').doc(idB);
-          const docSnapB = await docRefB.get();
-          if (!docSnapB.exists) await docRefB.set(JSON.parse(JSON.stringify(payloadB)));
-        } else {
-          localDbEngine.saveCharacter(payloadB);
-        }
+        localDbEngine.saveCharacter(payloadB);
 
         const rawWinner = bR.predictedWinner || baseA;
         const winnerLower = rawWinner.toLowerCase();
@@ -4343,15 +4046,9 @@ You must return a valid JSON object matching this structure:
           customHandicaps: document.getElementById('custom-handicaps').value.trim() || ''
         };
 
-        if (db && currentUser) {
-          const battlesRef = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('battles');
-          const battleDocRef = await battlesRef.add(JSON.parse(JSON.stringify(battleDocPayload)));
-          window.currentBattleId = battleDocRef.id;
-        } else {
-          const savedBattle = localDbEngine.saveBattle(battleDocPayload);
-          window.currentBattleId = savedBattle.id;
-          loadLocalData();
-        }
+        const savedBattle = localDbEngine.saveBattle(battleDocPayload);
+        window.currentBattleId = savedBattle.id;
+        loadLocalData();
 
       } catch (err) {
         console.error("Error writing data to permanent database:", err);
@@ -4460,16 +4157,11 @@ You must return a valid JSON object matching this structure:
           verdictSummary: newVerdict
         };
 
-        if (db && currentUser) {
-          const battleDocRef = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('battles').doc(window.currentBattleId);
-          await battleDocRef.update(updatePayload);
-        } else {
-          const idx = battlesGlobal.findIndex(b => b.id === window.currentBattleId);
-          if (idx !== -1) {
-            battlesGlobal[idx] = { ...battlesGlobal[idx], ...updatePayload };
-            localStorage.setItem('battle_lab_battles', JSON.stringify(battlesGlobal));
-            loadLocalData();
-          }
+        const idx = battlesGlobal.findIndex(b => b.id === window.currentBattleId);
+        if (idx !== -1) {
+          battlesGlobal[idx] = { ...battlesGlobal[idx], ...updatePayload };
+          localStorage.setItem('battle_lab_battles', JSON.stringify(battlesGlobal));
+          loadLocalData();
         }
 
         document.getElementById('predicted-winner').innerText = newWinner;
@@ -4496,13 +4188,8 @@ You must return a valid JSON object matching this structure:
         async () => {
           const currentBattleId = window.currentBattleId;
           try {
-            if (db && currentUser) {
-              const docRef = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('battles').doc(currentBattleId);
-              await docRef.delete();
-            } else {
-              localDbEngine.deleteBattle(currentBattleId);
-              loadLocalData();
-            }
+            localDbEngine.deleteBattle(currentBattleId);
+            loadLocalData();
           } catch (err) {
             console.error("Failed to delete battle during rematch:", err);
           }
@@ -4520,13 +4207,8 @@ You must return a valid JSON object matching this structure:
       if (delBtn.dataset.confirming === "true") {
         const battleId = window.currentBattleId;
         try {
-          if (db && currentUser) {
-            const docRef = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('battles').doc(battleId);
-            docRef.delete();
-          } else {
-            localDbEngine.deleteBattle(battleId);
-            loadLocalData();
-          }
+          localDbEngine.deleteBattle(battleId);
+          loadLocalData();
           
           document.getElementById('results-card').classList.add('hidden');
           window.currentBattleId = null;
@@ -4957,17 +4639,11 @@ Run a complete arbitration cycle. Decide if this dispute changes the outcome.`;
 
       try {
         const compressed = await compressBase64Image(customUrl, 640, 360, 0.7);
-        
-        if (db && currentUser) {
-          const docRef = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('battles').doc(battleId);
-          await docRef.update({ battleSceneImgUrl: compressed });
-        } else {
-          const idx = battlesGlobal.findIndex(b => b.id === battleId);
-          if (idx !== -1) {
-            battlesGlobal[idx].battleSceneImgUrl = compressed;
-            localStorage.setItem('battle_lab_battles', JSON.stringify(battlesGlobal));
-            loadLocalData();
-          }
+        const idx = battlesGlobal.findIndex(b => b.id === battleId);
+        if (idx !== -1) {
+          battlesGlobal[idx].battleSceneImgUrl = compressed;
+          localStorage.setItem('battle_lab_battles', JSON.stringify(battlesGlobal));
+          loadLocalData();
         }
 
         const imgEl = document.getElementById('battle-scene-img');
@@ -5014,16 +4690,11 @@ Run a complete arbitration cycle. Decide if this dispute changes the outcome.`;
         const newSceneUrl = await generateBattleScene(winnerName, loserName, winnerVariant, loserVariant);
         const compressed = await compressBase64Image(newSceneUrl, 640, 360, 0.7);
 
-        if (db && currentUser) {
-          const docRef = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('battles').doc(battleId);
-          await docRef.update({ battleSceneImgUrl: compressed });
-        } else {
-          const idx = battlesGlobal.findIndex(b => b.id === battleId);
-          if (idx !== -1) {
-            battlesGlobal[idx].battleSceneImgUrl = compressed;
-            localStorage.setItem('battle_lab_battles', JSON.stringify(battlesGlobal));
-            loadLocalData();
-          }
+        const idx = battlesGlobal.findIndex(b => b.id === battleId);
+        if (idx !== -1) {
+          battlesGlobal[idx].battleSceneImgUrl = compressed;
+          localStorage.setItem('battle_lab_battles', JSON.stringify(battlesGlobal));
+          loadLocalData();
         }
 
         const imgEl = document.getElementById('battle-scene-img');
@@ -5050,16 +4721,11 @@ Run a complete arbitration cycle. Decide if this dispute changes the outcome.`;
       openModal("Switching Scene...", "Configuring display to classic side-by-side VS cards split...", "fa-solid fa-spinner animate-spin text-purple-400");
 
       try {
-        if (db && currentUser) {
-          const docRef = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('battles').doc(battleId);
-          await docRef.update({ battleSceneImgUrl: "fallback-split" });
-        } else {
-          const idx = battlesGlobal.findIndex(b => b.id === battleId);
-          if (idx !== -1) {
-            battlesGlobal[idx].battleSceneImgUrl = "fallback-split";
-            localStorage.setItem('battle_lab_battles', JSON.stringify(battlesGlobal));
-            loadLocalData();
-          }
+        const idx = battlesGlobal.findIndex(b => b.id === battleId);
+        if (idx !== -1) {
+          battlesGlobal[idx].battleSceneImgUrl = "fallback-split";
+          localStorage.setItem('battle_lab_battles', JSON.stringify(battlesGlobal));
+          loadLocalData();
         }
 
         const imgEl = document.getElementById('battle-scene-img');
@@ -5224,5 +4890,4 @@ Run a complete arbitration cycle. Decide if this dispute changes the outcome.`;
       window.addEventListener('DOMContentLoaded', startApp);
     }
   </script>
-</body>
-</html>
+</body></html>
