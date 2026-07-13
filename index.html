@@ -21,13 +21,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-  <!-- 
-    GEMINI API KEY CONFIGURATION
-    Replace "YOUR_API_KEY" with your actual Google AI Studio Gemini API key.
-    You can get a key from: https://aistudio.google.com/app/apikey
-  -->
-  <script>window.__api_key = "AQ.Ab8RN6I2pC_c39Rjke6B1QqKcQB3I57SRgR775QWqJOVL9X8zw";</script>
-
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
@@ -1831,6 +1824,7 @@
     let battlesGlobal = [];
 
     // Safely parse the injected environment configuration variables
+    const apiKey = typeof __api_key !== 'undefined' ? __api_key : (window.__api_key || ''); // Re-added apiKey definition
     try {
       const rawConfig = typeof __firebase_config !== 'undefined' ? __firebase_config : (window.__firebase_config || null);
       if (rawConfig) {
@@ -2729,7 +2723,7 @@ Output valid JSON matching this schema:
         };
 
         const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
-          method: 'POST', // This should be apiKey, not a separate variable
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
@@ -3607,6 +3601,11 @@ Output valid JSON matching this schema:
         }
       }, 1600);
 
+      if (!apiKey) {
+        clearInterval(stageInterval);
+        throw new Error("Gemini API Key is missing. Please set it in index.html.");
+      }
+
       try {
         const systemPrompt = `You are the Multiverse Battle Core, a cosmic battle analyzer. 
 Analyze matches between any characters with ultimate fidelity and scientific power scaling rules. 
@@ -3736,6 +3735,11 @@ You must return a valid JSON object matching this structure:
       loadingEl.classList.remove('hidden');
       imgEl.classList.add('hidden');
 
+      if (!apiKey) {
+        console.error("Gemini API Key is missing. Cannot generate battle scene.");
+        return "fallback-split";
+      }
+
       const variantWinnerStr = winnerVariant ? `(${winnerVariant} variant)` : "";
       const variantLoserStr = loserVariant ? `(${loserVariant} variant)` : "";
       
@@ -3797,7 +3801,7 @@ You must return a valid JSON object matching this structure:
             }
           };
 
-        const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-image-preview:generateContent?key=${window.__api_key}`, {
+          const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-image-preview:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -3819,7 +3823,7 @@ You must return a valid JSON object matching this structure:
             instances: { prompt: referencePrompt },
             parameters: { sampleCount: 1 }
           };
-          const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${window.__api_key}`, {
+          const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -4618,7 +4622,7 @@ Run a complete arbitration cycle. Decide if this dispute changes the outcome.`;
         };
 
         const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
-          headers: { 'Content-Type': 'application/json' }, // This should be window.__api_key
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
 
