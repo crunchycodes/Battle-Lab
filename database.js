@@ -473,7 +473,7 @@ function exportData() {
     
     const downloadAnchor = document.createElement('a');
     downloadAnchor.href = url;
-    downloadAnchor.download = `battle_lab_backup_${new Date().toISOString().slice(0,10)}.json`;
+    downloadAnchor.download = `char-battle-archive.json`;
     
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
