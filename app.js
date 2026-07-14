@@ -1436,9 +1436,9 @@ function playbackBattle(battle) {
   document.getElementById("predicted-winner").textContent = battle.predictedWinner;
   document.getElementById("win-probability").textContent = battle.winProbability;
 
-  document.getElementById("results-phase-1").textContent = battle.phase1;
-  document.getElementById("results-phase-2").textContent = battle.phase2;
-  document.getElementById("results-phase-3").textContent = battle.phase3Climax;
+  document.getElementById("results-phase-1").textContent = battle.phase1 || battle.phase1Setup;
+  document.getElementById("results-phase-2").textContent = battle.phase2 || battle.phase2MidGame;
+  document.getElementById("results-phase-3").textContent = battle.phase3Climax || "";
   document.getElementById("results-verdict").textContent = battle.verdictSummary;
 
   const fallbackEl = document.getElementById('battle-scene-fallback');
