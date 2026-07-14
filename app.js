@@ -201,10 +201,7 @@ function loadStateFromLocalStorage() {
 }
 
 function saveStateToLocalStorage() {
-  localStorage.setItem("vs_battler_state", JSON.stringify({
-    characters: state.characters,
-    battles: state.battles
-  }));
+  localStorage.setItem("vs_battler_state", JSON.stringify({ battles: state.battles }));
 }
 
 window.switchTab = function(tabName) {
