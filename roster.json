@@ -1,0 +1,139 @@
+{
+  "characters": [
+    {
+      "id": "a-train-the-boys",
+      "weight": "200 lbs",
+      "name": "A-Train",
+      "realName": "Reggie Franklin",
+      "mediaSource": "The Boys (TV Series)",
+      "variant": "Default",
+      "powers": [
+        "Superhuman Speed (Mach 3)",
+        "Enhanced Strength",
+        "Increased Density",
+        "Accelerated Healing"
+      ],
+      "imageUrl": "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=300",
+      "bio": "A-Train is the resident speedster of The Seven, world-renowned for being the 'fastest man alive' in his universe. However, his power is fueled by Compound V and his ego, often leaving a trail of collateral damage in his wake.",
+      "personality": "Arrogant, reckless, and deeply insecure about his status, A-Train uses his speed to bully opponents and is prone to making mistakes under pressure."
+    },
+    {
+      "id": "tanjiro-kamado-ds",
+      "weight": "134 lbs",
+      "name": "Tanjiro Kamado",
+      "realName": "Tanjiro Kamado",
+      "mediaSource": "Demon Slayer",
+      "variant": "End of Series",
+      "powers": [
+        "Hinokami Kagura (Sun Breathing)",
+        "Water Breathing",
+        "Transparent World Prediction",
+        "Exceptional Olfactory Senses"
+      ],
+      "imageUrl": "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&q=80&w=300",
+      "bio": "A gentle and highly skilled Demon Slayer. Tanjiro utilizes physical Breathing techniques and deep sensory capabilities to battle massive threats, displaying high operational speed, tactical genius, and absolute resolve.",
+      "personality": "Compassionate, extraordinarily determined, selfless, and analytical during battle."
+    },
+    {
+      "id": "eraserhead-mha",
+      "weight": "168 lbs",
+      "name": "Eraserhead",
+      "realName": "Shota Aizawa",
+      "mediaSource": "My Hero Academia",
+      "variant": "Prime Hero",
+      "powers": [
+        "Erasure (Quirk Disable)",
+        "Capture Weapon Combat Style",
+        "High-Tier Tactical Intelligence",
+        "Expert Martial Artist"
+      ],
+      "imageUrl": "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=300",
+      "bio": "A pro hero at U.A. High School. Shota Aizawa uses his gaze to neutralize the superhuman abilities (Quirks) of any combatant he sees while subduing them with specialized steel-wire cloth and quick tactical intelligence.",
+      "personality": "Cold, logical, pragmatic, and highly efficient in defensive counter-play."
+    },
+    {
+      "id": "homelander-the-boys",
+      "weight": "215 lbs",
+      "name": "Homelander",
+      "realName": "John Gillman",
+      "mediaSource": "The Boys (TV Series)",
+      "variant": "Default",
+      "powers": [
+        "Superhuman Strength & Flight",
+        "Heat Vision (Lasers)",
+        "Near-Invulnerability",
+        "Superhuman Auditory Reception"
+      ],
+      "imageUrl": "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&q=80&w=300",
+      "bio": "The strongest, most terrifying superhuman in Vought's roster. Homelander wields god-like physical traits but is entirely undisciplined, relying on raw intimidation and direct energy projection to obliterate enemies.",
+      "personality": "Psychopathic, narcissistic, fragile under unexpected pressure, and prone to extreme tantrums."
+    }
+  ],
+  "battles": [
+    {
+      "id": "match-tanjiro-aizawa",
+      "fighter1Id": "tanjiro-kamado-ds",
+      "fighter2Id": "eraserhead-mha",
+      "phase1": "Aizawa drops from the shadows, immediately targeting Tanjiro with his glowing red eyes. His Quirk 'Erasure' is active, aiming to disable Tanjiro's abilities. However, Tanjiro's breathing techniques are biological and physical, not superpower quirks. Unaffected, Tanjiro registers the tactical ambush using his sharp sense of smell, narrowly parrying Aizawa's capturing cloth with a quick, defensive Water Breathing slice.",
+      "phase2": "Recognizing his capture weapon failed to entrap the swordsman, Aizawa pivots to close-quarters martial arts. He hurls caltrops to restrict Tanjiro's footing. Tanjiro adjusts, recognizing Aizawa's tactical proficiency. Utilizing 'Water Breathing: Second Form (Water Wheel)', Tanjiro loops over the caltrops and launches a counter-assault. Aizawa is forced onto the defensive, relying entirely on physical conditioning to redirect the force of the blades.",
+      "phase3Climax": "Tanjiro activates the 'Transparent World,' reading Aizawa's physical mechanics, muscle contractions, and blood flow. Predicting exactly where the capturing scarf will strike next, Tanjiro steps into the 'Selfless State.' He executes a flawless 'Hinokami Kagura: Burning Bones, Summer Sun', cleaving clean through the binding weapon. The glowing blazing strike halts cleanly right at Aizawa's throat, solidifying Tanjiro's mastery of speed and analysis.",
+      "predictedWinner": "Tanjiro Kamado",
+      "winProbability": "92%",
+      "verdictSummary": "Tanjiro secures a decisive victory due to a fundamental mismatch in power mechanics. Aizawa's primary advantage, Erasure, is ineffective against Breathing Styles which are purely physiological enhancements rather than Quirks. With the Transparent World allowing Tanjiro to predict Aizawa's movements with surgical precision, the Pro Hero has no viable way to restrain or outmaneuver the Sun Breather.",
+      "timestamp": 1782394389124
+    },
+    {
+      "id": "match-homelander-atrain",
+      "fighter1Id": "homelander-the-boys",
+      "fighter2Id": "a-train-the-boys",
+      "phase1": "Homelander stands hovering in place, yawning as A-Train circles him at Mach 3. A-Train attempts to strike with a sonic boom shoulder-charge. Homelander doesn't even move, absorbing the full brunt of the kinetic impact with absolute invulnerability, sending A-Train crashing back from the shockwave.",
+      "phase2": "A-Train, panicking, runs across the battlefield looking for any projectile or weak point, his heart rate spiking dangerously. Homelander smiles cruelly, slowly tracking A-Train's motion with high-frequency auditory tracking. He fires a sweeping bar of thermal Heat Vision, scorching the floor and slicing off A-Train's pathways, boxing him into a corner.",
+      "phase3Climax": "Terrified and cornered, A-Train pushes his body past Mach 3 to dodge, but his heart begins to give out from stress. Homelander instantly closes the distance with raw, hypersonic flight, grabbing A-Train by the throat with a single hand. Pressing him into the ground, Homelander charges his glowing red eyes, ending the fight with absolute physical domination.",
+      "predictedWinner": "Homelander",
+      "winProbability": "99%",
+      "verdictSummary": "A completely one-sided slaughter. A-Train's high-speed kinematics hold zero destructive value against Homelander's invulnerable Kryptonian-level physiology. Under extreme pressure, A-Train's cardiovascular vulnerabilities flare up, while Homelander's high speed and flight enable him to easily track and dominate the fast but fragile speedster.",
+      "timestamp": 1782395389124
+    },
+    {
+      "id": "match-1783984284561",
+      "fighter1Id": "a-train-the-boys",
+      "fighter2Id": "tanjiro-kamado-ds",
+      "phase1": "A-Train triggers their initial sequence, establishing immediate tactical perimeter against Tanjiro Kamado. The arena reverberates as A-Train showcases their core signature abilities, forcing Tanjiro Kamado to deploy dynamic evasive counter-measures.",
+      "phase2": "Tanjiro Kamado performs structural adaptation, analyzing the pacing of the offensive. Exploiting a minor vulnerability in A-Train's stance, Tanjiro Kamado executes an aggressive countersurge. Physical and energy states undergo a massive tactical shift.",
+      "phase3Climax": "In an explosive final exchange, A-Train channels their total combat potential. Harnessing their specialized abilities, A-Train executes a flawless tactical maneuver, bypassing Tanjiro Kamado's final line of defense and halting their offensive.",
+      "predictedWinner": "A-Train",
+      "winProbability": "50%",
+      "verdictSummary": "A-Train secures the battle scenario primarily due to superior capability versatility and tactical alignment. Tanjiro Kamado displayed high competence, but was overwhelmed during the critical third phase threshold.",
+      "timestamp": 1783984284561
+    },
+    {
+      "id": "match-1784005973505",
+      "fighter1Id": "a-train-the-boys",
+      "fighter2Id": "tanjiro-kamado-ds",
+      "phase1": "A-Train triggers their initial sequence, establishing immediate tactical perimeter against Tanjiro Kamado. The arena reverberates as A-Train showcases their core signature abilities, forcing Tanjiro Kamado to deploy dynamic evasive counter-measures.",
+      "phase2": "Tanjiro Kamado performs structural adaptation, analyzing the pacing of the offensive. Exploiting a minor vulnerability in A-Train's stance, Tanjiro Kamado executes an aggressive countersurge. Physical and energy states undergo a massive tactical shift.",
+      "phase3Climax": "In an explosive final exchange, A-Train channels their total combat potential. Harnessing their specialized abilities, A-Train executes a flawless tactical maneuver, bypassing Tanjiro Kamado's final line of defense and halting their offensive.",
+      "predictedWinner": "A-Train",
+      "winProbability": "50%",
+      "verdictSummary": "A-Train secures the battle scenario primarily due to superior capability versatility and tactical alignment. Tanjiro Kamado displayed high competence, but was overwhelmed during the critical third phase threshold.",
+      "timestamp": 1784005973505
+    },
+    {
+      "id": "match-1784006669704",
+      "fighter1Id": "eraserhead-mha",
+      "fighter2Id": "homelander-the-boys",
+      "phase1": "Eraserhead triggers their initial sequence, establishing immediate tactical perimeter against Homelander. The arena reverberates as Eraserhead showcases their core signature abilities, forcing Homelander to deploy dynamic evasive counter-measures.",
+      "phase2": "Homelander performs structural adaptation, analyzing the pacing of the offensive. Exploiting a minor vulnerability in Eraserhead's stance, Homelander executes an aggressive countersurge. Physical and energy states undergo a massive tactical shift.",
+      "phase3Climax": "In an explosive final exchange, Homelander channels their total combat potential. Harnessing their specialized abilities, Homelander executes a flawless tactical maneuver, bypassing Eraserhead's final line of defense and halting their offensive.",
+      "predictedWinner": "Homelander",
+      "winProbability": "50%",
+      "verdictSummary": "Homelander secures the battle scenario primarily due to superior capability versatility and tactical alignment. Eraserhead displayed high competence, but was overwhelmed during the critical third phase threshold.",
+      "timestamp": 1784006669704,
+      "battleSceneImgUrl": "fallback-split",
+      "customBattleground": "",
+      "customRules": "",
+      "customHandicaps": "",
+      "dispute": ""
+    }
+  ]
+}
