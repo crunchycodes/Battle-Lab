@@ -1847,7 +1847,6 @@
     };
 
     const appId = typeof __app_id !== 'undefined' ? __app_id : (window.__app_id || 'multiverse-battle-laboratory');
-    let apiKey = "";
     let auth = null;
     let db = null;
     let currentUser = null;
@@ -1855,98 +1854,10 @@
     let battlesGlobal = [];
 
     // Safely parse the injected environment configuration variables
-    try {
-      if (!db || !currentUser) return;
-      try {
-        const charsRef = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('characters');
-        const snapshot = await charsRef.get();
-        if (snapshot.empty) {
-          const defaultFighters = [
-            {
-              name: "Sonic",
-              baseName: "Sonic",
-              variant: "Default",
-              realName: "Sonic the Hedgehog",
-              publisher: "Sega",
-              powers: ["Super Speed", "Spin Dash", "Chaos Control"],
-              alignment: "Good",
-              height: "3'3\"",
-              weight: "77 lbs",
-              personality: "Impatient, adventurous, kind-hearted, loves freedom.",
-              bio: "The world's fastest hedgehog, who can run at supersonic speeds and loves adventure.",
-              mediaSource: "Sonic the Hedgehog",
-              franchise: "Sonic the Hedgehog",
-              imageUrl: "https://placehold.co/400x300/1e293b/94a3b8?text=Sonic",
-              wikiLink: "https://sonic.fandom.com/wiki/Sonic_the_Hedgehog",
-              createdTimestamp: Date.now()
-            },
-            {
-              name: "Kirby",
-              baseName: "Kirby",
-              variant: "Default",
-              realName: "Kirby of the Stars",
-              publisher: "Nintendo",
-              powers: ["Inhale Copy Ability", "Float", "Star Spit"],
-              alignment: "Good",
-              height: "0'8\"",
-              weight: "0.1 lbs",
-              personality: "Cheerful, innocent, loves eating and sleeping.",
-              bio: "A round, pink hero from Planet Popstar who can copy abilities by swallowing foes.",
-              mediaSource: "Kirby",
-              franchise: "Kirby",
-              imageUrl: "https://placehold.co/400x300/1e293b/94a3b8?text=Kirby",
-              wikiLink: "https://kirby.fandom.com/wiki/Kirby",
-              createdTimestamp: Date.now()
-            },
-            {
-              name: "Shadow",
-              baseName: "Shadow",
-              variant: "Default",
-              realName: "Shadow the Hedgehog",
-              publisher: "Sega",
-              powers: ["Chaos Spear", "Chaos Blast", "Teleportation"],
-              alignment: "Neutral",
-              height: "3'3\"",
-              weight: "77 lbs",
-              personality: "Brooding, intense, fiercely determined, independent.",
-              bio: "The Ultimate Life Form, a black hedgehog created by Gerald Robotnik to cure illness.",
-              mediaSource: "Sonic the Hedgehog",
-              franchise: "Sonic the Hedgehog",
-              imageUrl: "https://placehold.co/400x300/1e293b/94a3b8?text=Shadow",
-              wikiLink: "https://sonic.fandom.com/wiki/Shadow_the_Hedgehog",
-              createdTimestamp: Date.now()
-            },
-            {
-              name: "Mega Man",
-              baseName: "Mega Man",
-              variant: "Default",
-              realName: "Rock",
-              publisher: "Capcom",
-              powers: ["Mega Buster", "Weapon Copy System", "Slide"],
-              alignment: "Good",
-              height: "4'4\"",
-              weight: "230 lbs",
-              personality: "Just, peaceful, brave, values robot and human harmony.",
-              bio: "A highly advanced helper robot modified for combat by Dr. Light to defeat Dr. Wily.",
-              mediaSource: "Mega Man",
-              franchise: "Mega Man",
-              imageUrl: "https://placehold.co/400x300/1e293b/94a3b8?text=Mega+Man",
-              wikiLink: "https://megaman.fandom.com/wiki/Mega_Man",
-              createdTimestamp: Date.now()
-            }
-          ];
-          for (const f of defaultFighters) {
-            const docId = generateCharacterId(f.baseName, f.variant, f.franchise);
-            await charsRef.doc(docId).set(f);
-          }
-        }
-      } catch (err) {
-        console.warn("Failed to check and preload cloud roster:", err);
-      }
-    }
 
     function startApp() {
       apiKey = localStorage.getItem('gemini_api_key');
+
 
       if (apiKey) {
         document.getElementById('db-status').className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
@@ -2729,7 +2640,7 @@ Output valid JSON matching this schema:
           generationConfig: { responseMimeType: "application/json" }
         };
 
-        const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
+        const response = await fetchWithRetry(`<https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}>`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
