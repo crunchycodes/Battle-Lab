@@ -5695,7 +5695,7 @@ Output MUST match this strict JSON structure:
     }
 
     function openSettingsModal() {
-      document.getElementById('ai-provider').value = localStorage.getItem('battle_lab_ai_provider') || 'openrouter';
+      document.getElementById('ai-provider').value = localStorage.getItem('battle_lab_ai_provider') || 'google';
       populateModelList();
       document.getElementById('api-key-input').value = localStorage.getItem('battle_lab_ai_key') || '';
       document.getElementById('ollama-url').value = localStorage.getItem('battle_lab_ollama_url') || 'http://localhost:11434';
@@ -5710,7 +5710,7 @@ Output MUST match this strict JSON structure:
     }
 
     function saveAISettings() {
-      localStorage.setItem('battle_lab_ai_provider', document.getElementById('ai-provider').value);
+      localStorage.setItem('battle_lab_ai_provider', document.getElementById('ai-provider').value || 'google');
       localStorage.setItem('battle_lab_ai_model', document.getElementById('ai-model').value);
       localStorage.setItem('battle_lab_ai_key', document.getElementById('api-key-input').value.trim());
       localStorage.setItem('battle_lab_ollama_url', document.getElementById('ollama-url').value.trim());
