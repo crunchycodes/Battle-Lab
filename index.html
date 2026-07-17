@@ -3620,25 +3620,7 @@ You must return a valid JSON object matching this structure:
   }
 }`;
 
-        const payload = {
-          contents: [{ parts: [{ text: userPrompt }] }],
-          tools: [{ "google_search": {} }],
-          systemInstruction: { parts: [{ text: systemPrompt }] },
-          generationConfig: { responseMimeType: "application/json" }
-        };
-
-        const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-        const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        
-        if (!jsonText) throw new Error("Empty response from LLM backend.");
-
-        const battleResult = JSON.parse(jsonText);
+        const battleResult = await generateAIJson(userPrompt, systemPrompt);
         clearInterval(stageInterval);
 
         displayMatchDetails(battleResult);
@@ -3738,7 +3720,6 @@ You must return a valid JSON object matching this structure:
           imageParts.forEach(img => {
             parts.push({ inlineData: { mimeType: img.mimeType, data: img.data } });
           });
-
           const payload = {
             contents: [{ role: 'user', parts: parts }],
             generationConfig: {
@@ -3746,13 +3727,11 @@ You must return a valid JSON object matching this structure:
               imageConfig: { aspectRatio: "16:9" }
             }
           };
-          
-          const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-image-preview:generateContent?key=${apiKey}`, {
+          const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
           });
-          
           const result = await response.json();
           const part = result?.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
           if (part) {
@@ -3769,7 +3748,7 @@ You must return a valid JSON object matching this structure:
             instances: { prompt: referencePrompt },
             parameters: { sampleCount: 1 }
           };
-          const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`, {
+          const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -3805,7 +3784,7 @@ You must return a valid JSON object matching this structure:
       };
 
       try {
-        const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`, {
+        const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=${apiKey}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -4851,25 +4830,7 @@ Output your final ruling as raw JSON ONLY, matching this schema:
 User Lore Dispute Argument: "${text}"
 
 Run a complete arbitration cycle. Decide if this dispute changes the outcome.`;
-
-        const payload = {
-          contents: [{ parts: [{ text: userPrompt }] }],
-          tools: [{ "google_search": {} }],
-          systemInstruction: { parts: [{ text: systemPrompt }] },
-          generationConfig: { responseMimeType: "application/json" }
-        };
-
-        const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-        const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!jsonText) throw new Error("Empty response from arbitration engine.");
-
-        const arbitrationResult = JSON.parse(jsonText);
+        const arbitrationResult = await generateAIJson(userPrompt, systemPrompt);
         const outcomeChanged = arbitrationResult.outcomeChanged === true;
         const aiResponse = arbitrationResult.aiResponse || "No further notes.";
 
@@ -5165,24 +5126,7 @@ Output MUST match this strict JSON structure:
   "wikiLink": "Fandom wiki page URL of this character"
 }`;
 
-        const payload = {
-          contents: [{ parts: [{ text: userPrompt }] }],
-          tools: [{ "google_search": {} }],
-          systemInstruction: { parts: [{ text: systemPrompt }] },
-          generationConfig: { responseMimeType: "application/json" }
-        };
-
-        const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-        const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        
-        if (!jsonText) throw new Error("Empty response from database engine.");
-        const profileResult = JSON.parse(jsonText);
+        const profileResult = await generateAIJson(userPrompt, systemPrompt);
 
         const varClean = 'Default';
         const baseClean = cleanBaseName(profileResult.name);
@@ -5274,24 +5218,7 @@ Output MUST match this strict JSON structure:
   "wikiLink": "Fandom wiki page URL of this character"
 }`;
 
-        const payload = {
-          contents: [{ parts: [{ text: userPrompt }] }],
-          tools: [{ "google_search": {} }],
-          systemInstruction: { parts: [{ text: systemPrompt }] },
-          generationConfig: { responseMimeType: "application/json" }
-        };
-
-        const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-        const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        
-        if (!jsonText) throw new Error("Empty response from database engine.");
-        const profileResult = JSON.parse(jsonText);
+        const profileResult = await generateAIJson(userPrompt, systemPrompt);
 
         const varClean = cleanVariantName(scoutVariant);
         const baseClean = cleanBaseName(profileResult.name);
@@ -5778,6 +5705,10 @@ Output MUST match this strict JSON structure:
       document.getElementById('settings-modal').classList.remove('hidden');
     }
 
+    function closeSettingsModal() {
+      document.getElementById('settings-modal').classList.add('hidden');
+    }
+
     function saveAISettings() {
       localStorage.setItem('battle_lab_ai_provider', document.getElementById('ai-provider').value);
       localStorage.setItem('battle_lab_ai_model', document.getElementById('ai-model').value);
@@ -6117,12 +6048,6 @@ async function fetchWithRetry(url, options, retries = 5, delay = 1000) {
     window.closeConfirmModal = closeConfirmModal;
     window.fetchWithRetry = fetchWithRetry;
     window.escapeHtml = escapeHtml;
-    window.urlToInlineData = urlToInlineData;
-    window.triggerClearDatabase = triggerClearDatabase;
-    window.executeDatabasePurge = executeDatabasePurge;
-    window.parseNameAndVariant = parseNameAndVariant;
-    window.refreshActiveBattleView = refreshActiveBattleView;
-    window.resetFightReportUI = resetFightReportUI;
     
     // Popup window explorer exposure
     window.openRosterExplorer = openRosterExplorer;
@@ -6132,6 +6057,11 @@ async function fetchWithRetry(url, options, retries = 5, delay = 1000) {
     window.openMatchesExplorer = openMatchesExplorer;
     window.closeMatchesExplorer = closeMatchesExplorer;
     window.applyMatchExplorerFilters = applyMatchExplorerFilters;
+    window.urlToInlineData = urlToInlineData;
+    window.triggerClearDatabase = triggerClearDatabase;
+    window.executeDatabasePurge = executeDatabasePurge;
+    window.parseNameAndVariant = parseNameAndVariant;
+    window.refreshActiveBattleView = refreshActiveBattleView;
     window.renderMatchExplorerList = renderMatchExplorerList;
     window.toggleCustomBattleImageForm = toggleCustomBattleImageForm;
     window.saveCustomBattleImage = saveCustomBattleImage;
@@ -6172,6 +6102,7 @@ async function fetchWithRetry(url, options, retries = 5, delay = 1000) {
     window.renderTournamentExplorerGrid = renderTournamentExplorerGrid;
 
     function clearRosterFilters() {
+      window.resetFightReportUI = resetFightReportUI;
       document.getElementById('explorer-char-search').value = '';
       document.getElementById('explorer-char-alignment').value = 'All';
       document.getElementById('explorer-char-franchise').value = 'All';
